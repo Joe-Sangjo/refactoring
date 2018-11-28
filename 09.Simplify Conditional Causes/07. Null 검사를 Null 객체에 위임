@@ -1,0 +1,95 @@
+## Null 검사를 Null 객체에 위임
+
+```
+null 값을 검사하는 코드가 계속 나올 땐
+  null 값을 null 객체로 만들자.
+```
+
+
+~~~java
+  
+  class Site {
+    Customer _customer;
+    Customer getCustomer(){
+      return _customer;
+    }
+  }
+  
+  class Customer{
+    public String getName();
+    public BillingPlan getPlan();
+    public PaymentHistory getHistory();
+  }
+  
+  public class PaymentHistory{
+    int getWeekDelinquentInLastYear();
+  }
+  
+  
+  
+  
+  Customer customer = site.getCustomer();
+  BillingPlan plan;
+  
+  if(customer == null) plan = BillingPlan.basic();
+  else plan = customer.getPlan();
+  
+  
+  String customerName;
+  if (customer == null) customerName = "occupant";
+  else customerName = customer.getName();
+  
+  int weeksDelinquent;
+  if (customer == null) weeksDelinquent = 0;
+  else weekDelinquent = customer.getHistory().getWeekDelinquentInLastYear();
+~~~
+
+
+~~~java
+
+  interface Null{}
+  
+  class NullCustomer extends Customer implements Null{
+    public boolean isNull(){
+      return true;
+    }
+    public String getName(){
+      return "occupant";
+    }
+    
+  }
+  
+  class Customer {
+    public boolean isNull() {
+      return false;
+    }
+    
+    static Customer newNull(){
+      return new NullCustomer();
+    }
+    protected Customer() {}
+  }
+  
+  
+  class Site {
+    Customer getCustomer() {
+      return (_customer == null) ? Customer.newNull() : _customer;
+    }
+  }
+   
+   
+  Customer customer = site.getCustomer();
+  BillingPlan plan;
+  
+  if(customer.isNull()) plan = BillingPlan.basic();
+  else plan = customer.getPlan();
+  
+  
+  String customerName;
+  customerName = customer.getName();
+  
+  int weeksDelinquent;
+  if (customer.isNull()) weeksDelinquent = 0;
+  else weekDelinquent = customer.getHistory().getWeekDelinquentInLastYear();
+ 
+~~~
