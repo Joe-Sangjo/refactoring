@@ -1,0 +1,58 @@
+## 여러 겹의 조건문을 감시 절로 전환 Replace Nested Conditional with Guard Clauses
+
+```
+메서드에 조건문이 있어서 정상적인 실행 경로를 파악하기 힘들 때는
+  모든 특수한 경우에 감시 절을 사용하자
+```
+
+
+조건문에서 if, else 둘 다 정상 동작의 일부라면, if절과 else 절로 구성된 조건문을 사용하고
+  조건문이 특이한 조건이라면 그 조건을 검사해서 조건이 true일 경우 return
+  이런 식의 검사를 감시절(guard clause)라고 함.
+  
+
+~~~java
+  double getPayAmount() {
+    double result;
+    if(_isDead) result = deadAmount();
+    else{
+      if(_isSeparated) result = separatedAmount();
+      else{
+        if(_isRetired) result = retiredAmount();
+        else result = normalPayAmount();
+      }
+    }
+    return result;
+  }
+~~~
+
+~~~java
+  double getPayAmount(){
+    if(_isDead) return deadAmount();
+    if(_isSeparated) return separatedAmount();
+    if(_isRetired) return retiredAmount();
+    return normalPayAmount();
+  }
+~~~
+
+#### 예제: 조건문을 역순으로 만들기
+
+~~~java
+  public double getAdjustedCapital(){
+    double result = 0.0;
+    if(_capital > 0.0){
+      if(_intRate > 0.0 && _duration > 0.0){
+        result = (_income / _duration) * ADJ_FACTOR;
+      }
+    }
+    return result;
+  }
+~~~
+
+~~~java
+  public double getAdjustedCapital(){
+    if(_capital <= 0.0) return 0.0;
+    if(_intRate <= 0.0 || _duration <= 0.0) return 0.0;
+    return (_income / _duration) * ADJ_FACTOR;
+  }
+~~~
