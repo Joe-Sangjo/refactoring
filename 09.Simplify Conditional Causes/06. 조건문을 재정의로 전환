@@ -1,0 +1,31 @@
+## 조건문을 재정의로 전환 Replace Conditional with Polymorphism
+
+```
+객체 타입에 따라 다른 기능을 실행하는 조건문이 있을 때는
+조건문의 각 절을 하위 클래스의 재정의 method 안으로 옮기고, 원본 method는 abstract 타입으로 수정하자
+```
+
+
+~~~java
+  class Employee{
+    int payAmount(){
+      switch(getType()){
+        case EmployeeType.ENGINEER:
+          return _monthlySalary;
+        case EmployeeType.SALESMAN:
+          return _monthlySalary + _commission;
+        case EmployeeType.MANAGER:
+          return _monthlySalary + _bonus;
+        default:
+          throw new RuntimeException("없는 사원입니다.");
+    }
+  }
+~~~
+
+~~~java
+  class Engineer extends Employee{
+    int payAmount(Employee emp){
+      return 
+    }
+  }
+~~~
